@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "./assets/Settl Logo.png";
+import logo from "./assets/Settl Logo Black.png";
 import Auth from "./pages/Auth.jsx";
 import KYC from "./pages/KYC.jsx";
 import PersonalDetails from "./pages/PersonalDetails.jsx";
@@ -54,9 +54,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-[72px] max-w-[1180px] items-center justify-between px-4 sm:px-6">
           <button onClick={() => go("dashboard")} className="flex items-center gap-2.5" aria-label="Settl dashboard">
-            <img src={logo} alt="Settl" className="h-10 w-10 object-contain" />
+            <img src={logo} alt="Settl" className="h-14 w-14 object-contain" />
           </button>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
             {tabs.map(([id, label]) => <button key={id} onClick={() => go(id)} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${page === id ? "bg-[#004fc5] text-white" : "text-slate-600 hover:bg-blue-50 hover:text-[#004fc5]"}`}>{label}</button>)}
