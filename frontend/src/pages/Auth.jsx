@@ -51,16 +51,13 @@ export default function Auth({ onAuthenticated }) {
           <div className="pointer-events-none absolute -right-16 -top-16 h-80 w-80 rounded-full bg-blue-400/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -left-20 h-96 w-96 rounded-full bg-indigo-500/25 blur-3xl" />
           <div className="relative z-10 flex items-center justify-between gap-3">
-            <img src={logo} alt="Settl" className="h-10 w-10 object-contain" />
-            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-blue-100">Sri Lanka Freelance Credit</span>
+            <img src={logo} alt="Settl" className="h-10 sm:h-12 w-auto object-contain" />
           </div>
           <div className="relative z-10 my-7 max-w-lg lg:my-0">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-blue-100 backdrop-blur-md"><span className="h-2 w-2 rounded-full bg-emerald-400" />Alternative Credit Scoring</span>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">Your work.<br />Your credit profile.</h1>
             <p className="mt-4 text-base leading-relaxed text-blue-100 lg:text-lg">Underwrite your real freelance earnings across Upwork, Fiverr, PickMe &amp; Daraz into a verified institutional credit score.</p>
             <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-5 shadow-inner backdrop-blur-md">
               <div className="flex items-center gap-4"><strong className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 font-mono text-lg">784</strong><div><p className="text-xs font-medium uppercase tracking-wider text-blue-200">Average Settl Baseline</p><p className="text-sm font-semibold">Unlocked LKR 450,000 credit limit</p></div></div>
-              <div className="mt-4 flex justify-between border-t border-white/10 pt-3 text-xs text-blue-200"><span>Verified by Commercial Bank &amp; DFCC</span><span className="font-mono">PDPA Compliant</span></div>
             </div>
           </div>
           <div className="relative z-10 grid grid-cols-3 gap-2 sm:gap-3">{[["01 Verify", "Instant Work Auth"], ["02 Consent", "Read-only Stream"], ["03 Score", "Institutional Tier"]].map(([step, detail]) => <div key={step} className="rounded-xl border border-white/10 bg-white/10 p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-blue-200">{step}</p><p className="mt-1 text-xs font-semibold">{detail}</p></div>)}</div>

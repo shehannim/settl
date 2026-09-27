@@ -11,18 +11,30 @@ import PayPalCallback from "./pages/PayPalCallback.jsx";
 import PayPalDashboard from "./pages/PayPalDashboard.jsx";
 import PayPalSuccess from "./pages/PayPalSuccess.jsx";
 
-const onboardingPages = new Set(["auth", "kyc", "personal-details", "income-streams"]);
+const onboardingPages = new Set([
+  "auth",
+  "kyc",
+  "personal-details",
+  "income-streams",
+]);
 
 export default function App() {
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
-  const [userId, setUserId] = useState(() => localStorage.getItem("userId") || "");
+  const [userId, setUserId] = useState(
+    () => localStorage.getItem("userId") || "",
+  );
   const [page, setPage] = useState(() => {
     if (window.location.search.includes("code=")) return "paypal-callback";
-    if (window.location.pathname.includes("/connect/paypal/success")) return "paypal-success";
+    if (window.location.pathname.includes("/connect/paypal/success"))
+      return "paypal-success";
     return localStorage.getItem("token") ? "dashboard" : "auth";
   });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const go = (nextPage) => setPage(nextPage);
+  const go = (nextPage) => {
+    setPage(nextPage);
+    setMobileMenuOpen(false);
+  };
 
   const completeAuth = ({ accessToken, id, email, name }) => {
     localStorage.setItem("token", accessToken);
@@ -35,7 +47,15 @@ export default function App() {
   };
 
   const logout = () => {
-    ["token", "userId", "user_id", "email", "name", "kyc_verified", "kyc_status"].forEach((key) => localStorage.removeItem(key));
+    [
+      "token",
+      "userId",
+      "user_id",
+      "email",
+      "name",
+      "kyc_verified",
+      "kyc_status",
+    ].forEach((key) => localStorage.removeItem(key));
     setToken("");
     setUserId("");
     go("auth");
@@ -49,29 +69,175 @@ export default function App() {
   }
 
   const userName = localStorage.getItem("name") || "Your profile";
-  const tabs = [["dashboard", "Dashboard"], ["paypal-dashboard", "Income"], ["bill-upload", "Bills"]];
+  const tabs = [
+    ["dashboard", "Dashboard"],
+    ["paypal-dashboard", "Income"],
+    ["bill-upload", "Bills"],
+  ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <div className="min-h-screen bg-[#f8f9ff] text-slate-900 font-sans">
+      <header className="sticky top-0 z-30 bg-[#f8f9ff]/80 backdrop-blur-md [-webkit-backdrop-filter:blur(12px)]">
         <div className="mx-auto flex h-[72px] max-w-[1180px] items-center justify-between px-4 sm:px-6">
-          <button onClick={() => go("dashboard")} className="flex items-center gap-2.5" aria-label="Settl dashboard">
-            <img src={logo} alt="Settl" className="h-14 w-14 object-contain" />
+          <button
+            onClick={() => go("dashboard")}
+            className="flex items-center"
+            aria-label="Settl dashboard"
+          >
+            <img
+              src={logo}
+              alt="Settl"
+              className="h-10 sm:h-9 w-auto object-contain"
+            />
           </button>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
-            {tabs.map(([id, label]) => <button key={id} onClick={() => go(id)} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${page === id ? "bg-[#004fc5] text-white" : "text-slate-600 hover:bg-blue-50 hover:text-[#004fc5]"}`}>{label}</button>)}
+
+          {/* Desktop Navigation */}
+          <nav
+            className="hidden items-center gap-1 md:flex"
+            aria-label="Primary navigation"
+          >
+            {tabs.map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => go(id)}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  page === id
+                    ? "bg-[#004fc5] text-white shadow-xs"
+                    : "text-slate-600 hover:bg-blue-50 hover:text-[#004fc5]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </nav>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm font-medium text-slate-500 sm:block">{userName}</span>
-            <button onClick={logout} className="rounded-full border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600">Sign out</button>
+
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            <span className="text-sm font-medium text-slate-500">
+              {userName}
+            </span>
+            <button
+              onClick={logout}
+              className="rounded-full border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+            >
+              Sign out
+            </button>
+          </div>
+
+          {/* Mobile Hamburger Button */}
+          <div className="flex md:hidden items-center">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label={
+                mobileMenuOpen
+                  ? "Close navigation menu"
+                  : "Open navigation menu"
+              }
+              aria-expanded={mobileMenuOpen}
+              className="flex h-10 w-10 items-center justify-center text-slate-700 hover:text-[#004fc5] active:scale-90 transition-all focus:outline-none"
+            >
+              <div
+                className={`transition-transform duration-300 transform ${mobileMenuOpen ? "rotate-90 text-[#004fc5]" : "rotate-0"}`}
+              >
+                {mobileMenuOpen ? (
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                )}
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Dropdown Menu Drawer with Smooth Slide & Fade Animation */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-[#f8f9ff]/95 backdrop-blur-xl shadow-xl ${
+            mobileMenuOpen
+              ? "max-h-[380px] opacity-100 border-t border-slate-200/60"
+              : "max-h-0 opacity-0 border-t-0 pointer-events-none"
+          }`}
+        >
+          <div className="px-4 pb-5 pt-3">
+            <div className="mb-3 px-3.5 py-2 rounded-xl bg-white border border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-500 font-medium">
+                Signed in as
+              </span>
+              <span className="text-xs font-bold text-slate-800">
+                {userName}
+              </span>
+            </div>
+
+            <nav
+              className="flex flex-col gap-1.5"
+              aria-label="Mobile primary navigation"
+            >
+              {tabs.map(([id, label]) => (
+                <button
+                  key={id}
+                  onClick={() => {
+                    go(id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                    page === id
+                      ? "bg-[#004fc5] text-white shadow-sm"
+                      : "text-slate-700 bg-white/70 hover:bg-white hover:text-[#004fc5]"
+                  }`}
+                >
+                  <span>{label}</span>
+                  {page === id && <span className="text-xs">●</span>}
+                </button>
+              ))}
+            </nav>
+
+            <div className="mt-4 pt-3 border-t border-slate-200/60">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-50 hover:text-red-700"
+              >
+                Sign out
+              </button>
+            </div>
           </div>
         </div>
       </header>
-      <main>
-        {page === "dashboard" && <Dashboard token={token} userId={userId} go={go} />}
+      <main key={page} className="animate-page-transition">
+        {page === "dashboard" && (
+          <Dashboard token={token} userId={userId} go={go} />
+        )}
         {page === "bill-upload" && <BillUpload token={token} go={go} />}
         {page === "paypal-connect" && <PayPalConnect go={go} />}
-        {page === "paypal-callback" && <PayPalCallback go={go} setUserId={setUserId} />}
+        {page === "paypal-callback" && (
+          <PayPalCallback go={go} setUserId={setUserId} />
+        )}
         {page === "paypal-success" && <PayPalSuccess go={go} />}
         {page === "paypal-dashboard" && <PayPalDashboard go={go} />}
       </main>
