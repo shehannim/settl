@@ -71,18 +71,12 @@ export default function KYC({ token, go }) {
             </div>
             <h2 className="mt-8 text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">Instant Verification.<br /><span className="text-teal-300">Zero Friction.</span></h2>
             <p className="mt-4 text-base lg:text-lg leading-relaxed text-blue-100">We use your NIC and verified email to authenticate your identity in seconds.</p>
-            <div className="mt-8 rounded-2xl border border-white/10 bg-white/10 p-5 shadow-inner backdrop-blur-md">
-              <p className="text-xs font-bold uppercase tracking-wider text-blue-200">Central Bank &amp; PDPA Compliant</p>
-              <p className="mt-2 text-xs leading-relaxed text-blue-100">Sri Lanka Personal Data Protection Act No. 9 of 2022 and 256-bit bank-grade encryption.</p>
-              <p className="mt-3 text-xs font-semibold text-teal-300 flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />Colombo Live Gateway</p>
-            </div>
           </div>
           <div className="mt-8 grid grid-cols-3 gap-2.5 text-xs"><Step active label="01 Account" /><Step active={stage === "otp"} label="02 Verify" /><Step label="03 Profile" /></div>
         </aside>
         <section className="flex min-h-[52vh] flex-col justify-between p-8 md:min-h-screen md:p-12">
           <button onClick={() => go("auth")} className="self-start text-xs font-medium text-slate-400 transition hover:text-[#004fc5]">← Back to sign in</button>
           {stage === "nic" ? <NicForm nic={nic} setNic={setNic} sendCode={sendCode} loading={loading} error={error} demoMode={DEMO_MODE} /> : <OtpForm email={email} otp={otp} setOtp={setOtp} verify={verify} loading={loading} error={error} resend={sendCode} demoMode={DEMO_MODE} />}
-          <p className="pt-6 text-center text-xs text-slate-400">Protected by 256-bit bank-grade encryption · Sri Lanka PDPA Compliant</p>
         </section>
       </div>
     </div>

@@ -124,10 +124,6 @@ export default function Login({ setToken, setUserId, go }) {
             <br />
             Your credit profile.
           </h1>
-          <p className="text-blue-100 text-base lg:text-lg leading-relaxed mb-8">
-            Underwrite your real freelance earnings across Upwork, Fiverr,
-            PickMe & Daraz into a verified institutional credit score.
-          </p>
 
           {/* Animated Social Proof Carousel */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 shadow-inner min-h-[88px] flex items-center overflow-hidden">
@@ -157,7 +153,9 @@ export default function Login({ setToken, setUserId, go }) {
                   <span
                     key={idx}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === carouselIndex ? "w-3 bg-white" : "w-1.5 bg-white/30"
+                      idx === carouselIndex
+                        ? "w-3 bg-white"
+                        : "w-1.5 bg-white/30"
                     }`}
                   />
                 ))}

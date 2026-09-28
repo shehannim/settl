@@ -1,9 +1,12 @@
 import { useState } from "react";
 import logo from "./assets/Settl Logo Black.png";
 import Auth from "./pages/Auth.jsx";
+import EmailVerify from "./pages/EmailVerify.jsx";
+import Consent from "./pages/Consent.jsx";
 import KYC from "./pages/KYC.jsx";
 import PersonalDetails from "./pages/PersonalDetails.jsx";
 import IncomeStreams from "./pages/IncomeStreams.jsx";
+import ScoreCalibration from "./pages/ScoreCalibration.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import BillUpload from "./pages/BillUpload.jsx";
 import PayPalConnect from "./pages/PayPalConnect.jsx";
@@ -13,9 +16,12 @@ import PayPalSuccess from "./pages/PayPalSuccess.jsx";
 
 const onboardingPages = new Set([
   "auth",
+  "email-verify",
+  "consent",
   "kyc",
   "personal-details",
   "income-streams",
+  "score-calibration",
 ]);
 
 export default function App() {
@@ -27,23 +33,41 @@ export default function App() {
     if (window.location.search.includes("code=")) return "paypal-callback";
     if (window.location.pathname.includes("/connect/paypal/success"))
       return "paypal-success";
+    const savedPage = localStorage.getItem("current_page");
+    if (savedPage) return savedPage;
     return localStorage.getItem("token") ? "dashboard" : "auth";
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const go = (nextPage) => {
+    localStorage.setItem("current_page", nextPage);
     setPage(nextPage);
     setMobileMenuOpen(false);
   };
 
-  const completeAuth = ({ accessToken, id, email, name }) => {
+  const completeAuth = ({ accessToken, id, email, name, signupMethod = "email", isRegister = false }) => {
     localStorage.setItem("token", accessToken);
     localStorage.setItem("userId", id);
     if (email) localStorage.setItem("email", email);
     if (name) localStorage.setItem("name", name);
+    localStorage.setItem("auth_provider", signupMethod);
     setToken(accessToken);
     setUserId(id);
-    go("kyc");
+
+    // SSO users (Google / Apple) bypass OTP because their email is pre-verified -> go straight to PDPA Data Consent
+    if (signupMethod === "google" || signupMethod === "apple") {
+      go("consent");
+      return;
+    }
+
+    // Email Sign-up routes directly to Email OTP verification screen
+    if (isRegister) {
+      go("email-verify");
+      return;
+    }
+
+    // Returning user sign-in: route to dashboard or next uncompleted step
+    go("dashboard");
   };
 
   const logout = () => {
@@ -53,8 +77,12 @@ export default function App() {
       "user_id",
       "email",
       "name",
+      "auth_provider",
+      "email_verified",
+      "pdpa_consent_granted",
       "kyc_verified",
       "kyc_status",
+      "current_page",
     ].forEach((key) => localStorage.removeItem(key));
     setToken("");
     setUserId("");
@@ -63,8 +91,12 @@ export default function App() {
 
   if (onboardingPages.has(page)) {
     if (page === "auth") return <Auth onAuthenticated={completeAuth} />;
+    if (page === "email-verify") return <EmailVerify go={go} onVerified={() => go("consent")} />;
+    if (page === "consent") return <Consent go={go} />;
     if (page === "kyc") return <KYC token={token} go={go} />;
     if (page === "personal-details") return <PersonalDetails go={go} />;
+    if (page === "income-streams") return <IncomeStreams go={go} />;
+    if (page === "score-calibration") return <ScoreCalibration go={go} token={token} />;
     return <IncomeStreams go={go} />;
   }
 
